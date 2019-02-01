@@ -306,11 +306,12 @@ typedef int64_t lws_usec_t;
 /* File operations stuff exists */
 #define LWS_FEATURE_FOPS
 
-
 #if defined(_WIN32)
 #if !defined(LWS_WIN32_HANDLE_TYPES)
 typedef SOCKET lws_sockfd_type;
 typedef HANDLE lws_filefd_type;
+#define LWS_FILEFD_FROM_INT(val)    ((lws_filefd_type)(uintptr_t)(val))
+#define LWS_FILEFD_TO_INT(fd)       ((int)(uintptr_t)(fd))
 #endif
 
 struct lws_pollfd {
@@ -321,14 +322,17 @@ struct lws_pollfd {
 #define LWS_POLLHUP (FD_CLOSE)
 #define LWS_POLLIN (FD_READ | FD_ACCEPT)
 #define LWS_POLLOUT (FD_WRITE)
-#else
 
+#else
 
 #if defined(LWS_WITH_ESP32)
 #include <libwebsockets/lws-esp32.h>
 #else
 typedef int lws_sockfd_type;
 typedef int lws_filefd_type;
+
+#define LWS_FILEFD_FROM_INT(val)    ((lws_filefd_type)(val))
+#define LWS_FILEFD_TO_INT(fd)       ((int)(fd))
 #endif
 
 #define lws_pollfd pollfd

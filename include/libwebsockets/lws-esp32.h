@@ -24,6 +24,9 @@
 typedef int lws_sockfd_type;
 typedef int lws_filefd_type;
 
+#define LWS_FILEFD_FROM_INT(val)    ((lws_filefd_type)(val))
+#define LWS_FILEFD_TO_INT(fd)       ((int)(fd))
+
 struct pollfd {
 	lws_sockfd_type fd; /**< fd related to */
 	short events; /**< which POLL... events to respond to */

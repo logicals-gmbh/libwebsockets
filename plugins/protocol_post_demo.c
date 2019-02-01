@@ -80,8 +80,8 @@ file_upload_cb(void *data, const char *name, const char *filename,
 		 * simple demo use a fixed name so we don't have to deal with
 		 * attacks  */
 #if !defined(LWS_WITH_ESP32)
-		pss->fd = (lws_filefd_type)(long long)lws_open("/tmp/post-file",
-			       O_CREAT | O_TRUNC | O_RDWR, 0600);
+		pss->fd = LWS_FILEFD_FROM_INT(lws_open("/tmp/post-file",
+			       O_CREAT | O_TRUNC | O_RDWR, 0600));
 #endif
 		break;
 	case LWS_UFS_FINAL_CONTENT:
@@ -94,7 +94,7 @@ file_upload_cb(void *data, const char *name, const char *filename,
 				return 1;
 
 #if !defined(LWS_WITH_ESP32)
-			n = write((int)(long long)pss->fd, buf, len);
+			n = write(LWS_FILEFD_TO_INT(pss->fd), buf, len);
 			lwsl_info("%s: write %d says %d\n", __func__, len, n);
 #else
 			lwsl_notice("%s: Received chunk size %d\n", __func__, len);
@@ -103,7 +103,7 @@ file_upload_cb(void *data, const char *name, const char *filename,
 		if (state == LWS_UFS_CONTENT)
 			break;
 #if !defined(LWS_WITH_ESP32)
-		close((int)(long long)pss->fd);
+		close(LWS_FILEFD_TO_INT(pss->fd));
 		pss->fd = LWS_INVALID_FILE;
 #endif
 		break;
